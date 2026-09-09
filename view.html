@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
 
   <title>RESIBOOTH — Your Photo</title>
 
@@ -15,9 +19,15 @@
 
     body {
       min-height: 100vh;
+      min-height: 100dvh;
+
       background: #f4f4f6;
       color: #111827;
-      font-family: Arial, Helvetica, sans-serif;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
       display: flex;
       flex-direction: column;
@@ -33,17 +43,26 @@
 
     h1 {
       color: #8B0000;
+
       font-family: Georgia, serif;
+
       font-size: 28px;
+      font-weight: 700;
+
       letter-spacing: 3px;
       text-transform: uppercase;
+
+      line-height: 1;
     }
 
     .sub {
       margin-top: 6px;
+
       color: #8B0000;
+
       font-size: 10px;
       font-weight: 800;
+
       letter-spacing: 2px;
       text-transform: uppercase;
     }
@@ -51,21 +70,27 @@
     .card {
       width: 100%;
       max-width: 420px;
+
       background: #ffffff;
 
-      border: 1px solid rgba(0,0,0,0.08);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+
       border-radius: 18px;
+
       padding: 14px;
 
-      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.08);
     }
 
     .label {
       text-align: center;
+
       color: #6b7280;
 
       font-size: 11px;
       font-weight: 700;
+
       letter-spacing: 1px;
       text-transform: uppercase;
 
@@ -74,7 +99,10 @@
 
     .photo {
       width: 100%;
+      height: auto;
+
       display: block;
+
       border-radius: 8px;
     }
 
@@ -84,6 +112,7 @@
 
       display: flex;
       flex-direction: column;
+
       gap: 10px;
 
       margin-top: 12px;
@@ -91,34 +120,50 @@
 
     .button {
       width: 100%;
+
       padding: 16px;
 
       border-radius: 999px;
-      border: none;
 
       text-decoration: none;
       text-align: center;
 
       font-size: 15px;
       font-weight: 700;
+
+      cursor: pointer;
+
+      transition:
+        transform 0.15s ease,
+        opacity 0.15s ease;
+    }
+
+    .button:active {
+      transform: scale(0.98);
     }
 
     .primary {
       background: #8B0000;
       color: #ffffff;
+
+      box-shadow:
+        0 8px 20px rgba(139, 0, 0, 0.22);
     }
 
     .secondary {
       background: #ffffff;
       color: #111827;
-      border: 1px solid rgba(0,0,0,0.10);
+
+      border: 1px solid rgba(0, 0, 0, 0.10);
     }
 
     .message {
       max-width: 380px;
+
       text-align: center;
 
       color: #6b7280;
+
       font-size: 13px;
       line-height: 1.5;
 
@@ -127,17 +172,44 @@
 
     .loading {
       text-align: center;
+
       padding: 40px 10px;
+
       color: #6b7280;
+
+      font-size: 14px;
     }
 
     .error {
       text-align: center;
+
       padding: 30px 10px;
     }
 
     .error h2 {
+      font-size: 19px;
+
       margin-bottom: 8px;
+    }
+
+    .error p {
+      color: #6b7280;
+
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .thanks {
+      margin-top: 18px;
+
+      color: #9ca3af;
+
+      font-size: 10px;
+      font-weight: 700;
+
+      letter-spacing: 1.5px;
+
+      text-align: center;
     }
   </style>
 </head>
@@ -146,62 +218,76 @@
 
   <header>
     <h1>RESIBOOTH</h1>
-    <div class="sub">BY SNAPS STUDIO</div>
+
+    <div class="sub">
+      BY SNAPS STUDIO
+    </div>
   </header>
 
-  <div id="app" class="card">
+
+  <!-- PHOTO CARD -->
+  <div
+    id="photo-card"
+    class="card"
+  >
     <div class="loading">
-      Loading your photo…
+      Loading your photo...
     </div>
   </div>
 
+
+  <!-- BUTTONS -->
   <div
     id="actions"
     class="actions"
-    style="display:none;"
-  ></div>
+    style="display: none;"
+  >
+  </div>
 
-  <p id="message" class="message"></p>
+
+  <!-- MESSAGE -->
+  <p
+    id="message"
+    class="message"
+  ></p>
+
+
+  <div class="thanks">
+    *** THANK YOU FOR SNAPPING ***
+  </div>
 
 
   <script>
 
     /*
      * ============================================================
-     * SUPABASE PHOTO VIEWER
+     * RESIBOOTH PHOTO VIEWER
      * ============================================================
-     */
-
-    const SUPABASE_URL =
-      'https://kjfghpchexnzxeruqssp.supabase.co';
-
-    const DEFAULT_BUCKET =
-      'photos';
-
-
-    /*
-     * Get elements
-     */
-    const app =
-      document.getElementById('app');
-
-    const actions =
-      document.getElementById('actions');
-
-    const message =
-      document.getElementById('message');
-
-
-    /*
-     * Read QR parameters
+     *
+     * The QR code sends the Supabase public image URL here.
      *
      * Example:
      *
-     * view.html?
-     * r=kjfghpchexnzxeruqssp
-     * &b=photos
-     * &id=20260909-170000-a1b2c3d4
-     * &v=color
+     * view.html?photo=https%3A%2F%2Fxxxxx.supabase.co%2Fstorage...
+     *
+     * No Supabase secret key is needed on this page.
+     *
+     * ============================================================
+     */
+
+
+    const photoCard =
+      document.getElementById("photo-card");
+
+    const actions =
+      document.getElementById("actions");
+
+    const message =
+      document.getElementById("message");
+
+
+    /*
+     * Read URL parameters
      */
     const params =
       new URLSearchParams(
@@ -209,36 +295,31 @@
       );
 
 
-    const projectRef =
-      params.get('r');
+    const photoUrl =
+      params.get("photo");
 
-    const bucket =
-      params.get('b') ||
-      DEFAULT_BUCKET;
 
-    const id =
-      params.get('id');
+    const otherPhotoUrl =
+      params.get("other");
+
 
     const variant =
-      params.get('v') === 'bw'
-        ? 'bw'
-        : 'color';
+      params.get("v") === "bw"
+        ? "bw"
+        : "color";
 
 
     /*
-     * Validate photo ID
+     * ============================================================
+     * CHECK PHOTO URL
+     * ============================================================
      */
-    const validId =
-      /^\d{8}-\d{6}-[a-f0-9]{8}$/i.test(
-        id || ''
-      );
 
-
-    if (!validId) {
+    if (!photoUrl) {
 
       showError(
-        'Invalid photo link',
-        'This QR code does not contain a valid photo ID.'
+        "Photo not found",
+        "This QR code does not contain a valid photo link."
       );
 
     } else {
@@ -256,77 +337,23 @@
 
     function loadPhoto() {
 
-      let baseUrl =
-        SUPABASE_URL;
-
-
-      /*
-       * If QR contains project reference,
-       * use that project.
-       */
-      if (projectRef) {
-
-        baseUrl =
-          'https://' +
-          projectRef +
-          '.supabase.co';
-
-      }
-
-
-      /*
-       * File path created by the booth
-       */
-      const filePath =
-        `p/${id}-${variant}.jpg`;
-
-
-      /*
-       * Public Supabase Storage URL
-       */
-      const photoUrl =
-        baseUrl +
-        '/storage/v1/object/public/' +
-        bucket +
-        '/' +
-        filePath;
-
-
-      /*
-       * Download filename
-       */
-      const filename =
-        `Snaps_Photobooth_${variant}_${id}.jpg`;
-
-
-      /*
-       * Download URL
-       */
-      const downloadUrl =
-        photoUrl +
-        '?download=' +
-        encodeURIComponent(filename);
-
-
-      console.log(
-        'Photo URL:',
-        photoUrl
-      );
-
-
-      /*
-       * Check image exists
-       */
       const image =
         new Image();
+
+
+      /*
+       * Prevent broken image from
+       * being displayed before loading.
+       */
+      image.style.display =
+        "none";
 
 
       image.onload =
         function () {
 
-          renderPhoto(
-            photoUrl,
-            downloadUrl
+          displayPhoto(
+            image
           );
 
         };
@@ -336,16 +363,28 @@
         function () {
 
           showError(
-            'Photo not found',
-            'This photo may have expired or the Supabase file is unavailable.'
+            "Photo unavailable",
+            "The photo could not be loaded. It may have been removed or the link may be invalid."
           );
 
         };
 
 
+      /*
+       * Add cache-busting parameter
+       * so the browser doesn't show
+       * an old cached photo.
+       */
+      const separator =
+        photoUrl.includes("?")
+          ? "&"
+          : "?";
+
+
       image.src =
         photoUrl +
-        '?t=' +
+        separator +
+        "t=" +
         Date.now();
 
     }
@@ -357,136 +396,196 @@
      * ============================================================
      */
 
-    function renderPhoto(
-      photoUrl,
-      downloadUrl
-    ) {
+    function displayPhoto(image) {
 
-      app.innerHTML = '';
+      /*
+       * Clear loading screen
+       */
+      photoCard.innerHTML = "";
 
 
+      /*
+       * Version label
+       */
       const label =
-        document.createElement('div');
+        document.createElement("div");
+
 
       label.className =
-        'label';
+        "label";
+
 
       label.textContent =
-        variant === 'bw'
-          ? 'Black & White Version'
-          : 'Colour Version';
-
-
-      const img =
-        document.createElement('img');
-
-      img.className =
-        'photo';
-
-      img.src =
-        photoUrl;
-
-      img.alt =
-        'Your photobooth photo';
-
-
-      app.appendChild(label);
-      app.appendChild(img);
+        variant === "bw"
+          ? "Black & White Version"
+          : "Colour Version";
 
 
       /*
-       * Show buttons
+       * Photo
+       */
+      image.className =
+        "photo";
+
+
+      image.alt =
+        "Your RESIBOOTH photo";
+
+
+      image.style.display =
+        "block";
+
+
+      /*
+       * Add to card
+       */
+      photoCard.appendChild(
+        label
+      );
+
+
+      photoCard.appendChild(
+        image
+      );
+
+
+      /*
+       * Display action buttons
        */
       actions.style.display =
-        'flex';
+        "flex";
 
 
       /*
-       * Download button
+       * ==========================================================
+       * DOWNLOAD BUTTON
+       * ==========================================================
        */
-      const download =
-        document.createElement('a');
 
-      download.className =
-        'button primary';
+      const downloadButton =
+        document.createElement("a");
 
-      download.href =
-        downloadUrl;
 
-      download.textContent =
-        'DOWNLOAD PHOTO';
+      downloadButton.className =
+        "button primary";
 
-      download.setAttribute(
-        'download',
-        ''
-      );
+
+      downloadButton.textContent =
+        "DOWNLOAD PHOTO";
+
+
+      /*
+       * Use Supabase download parameter
+       */
+      const downloadSeparator =
+        photoUrl.includes("?")
+          ? "&"
+          : "?";
+
+
+      downloadButton.href =
+        photoUrl +
+        downloadSeparator +
+        "download=" +
+        encodeURIComponent(
+          "RESIBOOTH_" +
+          (
+            variant === "bw"
+              ? "Black_White"
+              : "Colour"
+          ) +
+          "_Photo.png"
+        );
+
+
+      downloadButton.target =
+        "_blank";
+
+
+      downloadButton.rel =
+        "noopener";
 
 
       actions.appendChild(
-        download
+        downloadButton
       );
 
 
       /*
-       * Other version
+       * ==========================================================
+       * OTHER VERSION BUTTON
+       * ==========================================================
+       *
+       * If the QR code contains another
+       * Supabase public URL, show it.
+       *
+       * ==========================================================
        */
-      const otherVariant =
-        variant === 'bw'
-          ? 'color'
-          : 'bw';
+
+      if (otherPhotoUrl) {
+
+        const otherButton =
+          document.createElement("a");
 
 
-      const otherLabel =
-        variant === 'bw'
-          ? 'VIEW COLOUR VERSION'
-          : 'VIEW BLACK & WHITE VERSION';
+        otherButton.className =
+          "button secondary";
 
 
-      const otherUrl =
-        window.location.pathname +
-        '?r=' +
-        encodeURIComponent(
-          projectRef || ''
-        ) +
-        '&b=' +
-        encodeURIComponent(
-          bucket
-        ) +
-        '&id=' +
-        encodeURIComponent(
-          id
-        ) +
-        '&v=' +
-        otherVariant;
+        otherButton.textContent =
+          variant === "bw"
+            ? "VIEW COLOUR VERSION"
+            : "VIEW BLACK & WHITE VERSION";
 
 
-      const other =
-        document.createElement('a');
-
-      other.className =
-        'button secondary';
-
-      other.href =
-        otherUrl;
-
-      other.textContent =
-        otherLabel;
+        /*
+         * Build new URL
+         */
+        const currentPage =
+          window.location.pathname;
 
 
-      actions.appendChild(
-        other
-      );
+        const otherVariant =
+          variant === "bw"
+            ? "color"
+            : "bw";
+
+
+        const otherLink =
+          currentPage +
+          "?photo=" +
+          encodeURIComponent(
+            otherPhotoUrl
+          ) +
+          "&v=" +
+          otherVariant;
+
+
+        /*
+         * If we have an additional URL
+         * for the opposite version,
+         * preserve it as well.
+         */
+        otherButton.href =
+          otherLink;
+
+
+        actions.appendChild(
+          otherButton
+        );
+
+      }
 
 
       message.textContent =
-        'Your photo is ready to download.';
+        "Your photo is ready. Tap the button above to save it to your phone.";
 
     }
 
 
     /*
      * ============================================================
-     * ERROR
+     * ERROR MESSAGE
      * ============================================================
      */
 
@@ -495,39 +594,55 @@
       description
     ) {
 
-      app.innerHTML =
-        `
-        <div class="error">
-          <h2>${escapeHtml(title)}</h2>
-          <p class="message">
-            ${escapeHtml(description)}
-          </p>
-        </div>
-        `;
+      photoCard.innerHTML =
+        "";
+
+
+      const error =
+        document.createElement("div");
+
+
+      error.className =
+        "error";
+
+
+      const heading =
+        document.createElement("h2");
+
+
+      heading.textContent =
+        title;
+
+
+      const text =
+        document.createElement("p");
+
+
+      text.textContent =
+        description;
+
+
+      error.appendChild(
+        heading
+      );
+
+
+      error.appendChild(
+        text
+      );
+
+
+      photoCard.appendChild(
+        error
+      );
+
 
       actions.style.display =
-        'none';
+        "none";
+
 
       message.textContent =
-        '';
-
-    }
-
-
-    /*
-     * ============================================================
-     * ESCAPE HTML
-     * ============================================================
-     */
-
-    function escapeHtml(value) {
-
-      return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+        "";
 
     }
 
