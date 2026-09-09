@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>RESIBOOTH — Your Photo</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #f4f4f6;
+      color: #111827;
+      font-family: Arial, Helvetica, sans-serif;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      padding: 24px 16px 40px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      color: #8B0000;
+      font-family: Georgia, serif;
+      font-size: 28px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .sub {
+      margin-top: 6px;
+      color: #8B0000;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 18px;
+      padding: 14px;
+
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    .label {
+      text-align: center;
+      color: #6b7280;
+
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+
+      margin-bottom: 10px;
+    }
+
+    .photo {
+      width: 100%;
+      display: block;
+      border-radius: 8px;
+    }
+
+    .actions {
+      width: 100%;
+      max-width: 420px;
+
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      margin-top: 12px;
+    }
+
+    .button {
+      width: 100%;
+      padding: 16px;
+
+      border-radius: 999px;
+      border: none;
+
+      text-decoration: none;
+      text-align: center;
+
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .primary {
+      background: #8B0000;
+      color: #ffffff;
+    }
+
+    .secondary {
+      background: #ffffff;
+      color: #111827;
+      border: 1px solid rgba(0,0,0,0.10);
+    }
+
+    .message {
+      max-width: 380px;
+      text-align: center;
+
+      color: #6b7280;
+      font-size: 13px;
+      line-height: 1.5;
+
+      margin-top: 14px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px 10px;
+      color: #6b7280;
+    }
+
+    .error {
+      text-align: center;
+      padding: 30px 10px;
+    }
+
+    .error h2 {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>RESIBOOTH</h1>
+    <div class="sub">BY SNAPS STUDIO</div>
+  </header>
+
+  <div id="app" class="card">
+    <div class="loading">
+      Loading your photo…
+    </div>
+  </div>
+
+  <div
+    id="actions"
+    class="actions"
+    style="display:none;"
+  ></div>
+
+  <p id="message" class="message"></p>
+
+
+  <script>
+
+    /*
+     * ============================================================
+     * SUPABASE PHOTO VIEWER
+     * ============================================================
+     */
+
+    const SUPABASE_URL =
+      'https://kjfghpchexnzxeruqssp.supabase.co';
+
+    const DEFAULT_BUCKET =
+      'photos';
+
+
+    /*
+     * Get elements
+     */
+    const app =
+      document.getElementById('app');
+
+    const actions =
+      document.getElementById('actions');
+
+    const message =
+      document.getElementById('message');
+
+
+    /*
+     * Read QR parameters
+     *
+     * Example:
+     *
+     * view.html?
+     * r=kjfghpchexnzxeruqssp
+     * &b=photos
+     * &id=20260909-170000-a1b2c3d4
+     * &v=color
+     */
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+
+    const projectRef =
+      params.get('r');
+
+    const bucket =
+      params.get('b') ||
+      DEFAULT_BUCKET;
+
+    const id =
+      params.get('id');
+
+    const variant =
+      params.get('v') === 'bw'
+        ? 'bw'
+        : 'color';
+
+
+    /*
+     * Validate photo ID
+     */
+    const validId =
+      /^\d{8}-\d{6}-[a-f0-9]{8}$/i.test(
+        id || ''
+      );
+
+
+    if (!validId) {
+
+      showError(
+        'Invalid photo link',
+        'This QR code does not contain a valid photo ID.'
+      );
+
+    } else {
+
+      loadPhoto();
+
+    }
+
+
+    /*
+     * ============================================================
+     * LOAD PHOTO
+     * ============================================================
+     */
+
+    function loadPhoto() {
+
+      let baseUrl =
+        SUPABASE_URL;
+
+
+      /*
+       * If QR contains project reference,
+       * use that project.
+       */
+      if (projectRef) {
+
+        baseUrl =
+          'https://' +
+          projectRef +
+          '.supabase.co';
+
+      }
+
+
+      /*
+       * File path created by the booth
+       */
+      const filePath =
+        `p/${id}-${variant}.jpg`;
+
+
+      /*
+       * Public Supabase Storage URL
+       */
+      const photoUrl =
+        baseUrl +
+        '/storage/v1/object/public/' +
+        bucket +
+        '/' +
+        filePath;
+
+
+      /*
+       * Download filename
+       */
+      const filename =
+        `Snaps_Photobooth_${variant}_${id}.jpg`;
+
+
+      /*
+       * Download URL
+       */
+      const downloadUrl =
+        photoUrl +
+        '?download=' +
+        encodeURIComponent(filename);
+
+
+      console.log(
+        'Photo URL:',
+        photoUrl
+      );
+
+
+      /*
+       * Check image exists
+       */
+      const image =
+        new Image();
+
+
+      image.onload =
+        function () {
+
+          renderPhoto(
+            photoUrl,
+            downloadUrl
+          );
+
+        };
+
+
+      image.onerror =
+        function () {
+
+          showError(
+            'Photo not found',
+            'This photo may have expired or the Supabase file is unavailable.'
+          );
+
+        };
+
+
+      image.src =
+        photoUrl +
+        '?t=' +
+        Date.now();
+
+    }
+
+
+    /*
+     * ============================================================
+     * DISPLAY PHOTO
+     * ============================================================
+     */
+
+    function renderPhoto(
+      photoUrl,
+      downloadUrl
+    ) {
+
+      app.innerHTML = '';
+
+
+      const label =
+        document.createElement('div');
+
+      label.className =
+        'label';
+
+      label.textContent =
+        variant === 'bw'
+          ? 'Black & White Version'
+          : 'Colour Version';
+
+
+      const img =
+        document.createElement('img');
+
+      img.className =
+        'photo';
+
+      img.src =
+        photoUrl;
+
+      img.alt =
+        'Your photobooth photo';
+
+
+      app.appendChild(label);
+      app.appendChild(img);
+
+
+      /*
+       * Show buttons
+       */
+      actions.style.display =
+        'flex';
+
+
+      /*
+       * Download button
+       */
+      const download =
+        document.createElement('a');
+
+      download.className =
+        'button primary';
+
+      download.href =
+        downloadUrl;
+
+      download.textContent =
+        'DOWNLOAD PHOTO';
+
+      download.setAttribute(
+        'download',
+        ''
+      );
+
+
+      actions.appendChild(
+        download
+      );
+
+
+      /*
+       * Other version
+       */
+      const otherVariant =
+        variant === 'bw'
+          ? 'color'
+          : 'bw';
+
+
+      const otherLabel =
+        variant === 'bw'
+          ? 'VIEW COLOUR VERSION'
+          : 'VIEW BLACK & WHITE VERSION';
+
+
+      const otherUrl =
+        window.location.pathname +
+        '?r=' +
+        encodeURIComponent(
+          projectRef || ''
+        ) +
+        '&b=' +
+        encodeURIComponent(
+          bucket
+        ) +
+        '&id=' +
+        encodeURIComponent(
+          id
+        ) +
+        '&v=' +
+        otherVariant;
+
+
+      const other =
+        document.createElement('a');
+
+      other.className =
+        'button secondary';
+
+      other.href =
+        otherUrl;
+
+      other.textContent =
+        otherLabel;
+
+
+      actions.appendChild(
+        other
+      );
+
+
+      message.textContent =
+        'Your photo is ready to download.';
+
+    }
+
+
+    /*
+     * ============================================================
+     * ERROR
+     * ============================================================
+     */
+
+    function showError(
+      title,
+      description
+    ) {
+
+      app.innerHTML =
+        `
+        <div class="error">
+          <h2>${escapeHtml(title)}</h2>
+          <p class="message">
+            ${escapeHtml(description)}
+          </p>
+        </div>
+        `;
+
+      actions.style.display =
+        'none';
+
+      message.textContent =
+        '';
+
+    }
+
+
+    /*
+     * ============================================================
+     * ESCAPE HTML
+     * ============================================================
+     */
+
+    function escapeHtml(value) {
+
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    }
+
+  </script>
+
+</body>
+</html>
