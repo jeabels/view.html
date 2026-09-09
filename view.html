@@ -1,696 +1,541 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>RESIBOOTH — Your Photo</title>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            min-height: 100vh;
-
-            background: #f4f4f6;
-            color: #111827;
-
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            padding: 30px 16px 50px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .title {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: 3px;
-            color: #8b0000;
-        }
-
-        .subtitle {
-            margin-top: 6px;
-
-            font-size: 11px;
-            font-weight: 700;
-
-            letter-spacing: 2px;
-
-            color: #8b0000;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 420px;
-
-            background: #ffffff;
-
-            border-radius: 18px;
-
-            padding: 16px;
-
-            box-shadow:
-                0 8px 25px
-                rgba(0, 0, 0, 0.08);
-        }
-
-        .label {
-            text-align: center;
-
-            font-size: 12px;
-            font-weight: 700;
-
-            letter-spacing: 1px;
-
-            color: #6b7280;
-
-            margin-bottom: 12px;
-
-            text-transform: uppercase;
-        }
-
-        #photo {
-            width: 100%;
-            height: auto;
-
-            display: block;
-
-            border-radius: 10px;
-
-            background: #eeeeee;
-        }
-
-        .loading {
-            text-align: center;
-
-            padding: 40px 20px;
-
-            color: #6b7280;
-
-            font-size: 14px;
-        }
-
-        .error {
-            text-align: center;
-
-            padding: 35px 20px;
-        }
-
-        .error h2 {
-            margin-bottom: 10px;
-
-            font-size: 20px;
-        }
-
-        .error p {
-            color: #6b7280;
-
-            font-size: 13px;
-
-            line-height: 1.6;
-        }
-
-        .actions {
-            width: 100%;
-            max-width: 420px;
-
-            display: flex;
-            flex-direction: column;
-
-            gap: 10px;
-
-            margin-top: 14px;
-        }
-
-        .button {
-            width: 100%;
-
-            padding: 16px;
-
-            border-radius: 100px;
-
-            border: none;
-
-            font-size: 15px;
-            font-weight: 700;
-
-            text-align: center;
-            text-decoration: none;
-
-            cursor: pointer;
-        }
-
-        .download {
-            background: #8b0000;
-            color: #ffffff;
-
-            box-shadow:
-                0 8px 20px
-                rgba(139, 0, 0, 0.20);
-        }
-
-        .download:hover {
-            opacity: 0.9;
-        }
-
-        .note {
-            max-width: 360px;
-
-            margin-top: 16px;
-
-            text-align: center;
-
-            font-size: 12px;
-
-            line-height: 1.5;
-
-            color: #6b7280;
-        }
-
-        .thanks {
-            margin-top: 18px;
-
-            font-size: 10px;
-
-            letter-spacing: 2px;
-
-            color: #9ca3af;
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>RESIBOOTH – Your Photo</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #f4f4f6;
+      color: #111827;
+      font-family: Arial, Helvetica, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.10);
+      text-align: center;
+    }
+
+    .brand {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    .photo-wrapper {
+      width: 100%;
+      background: #f3f4f6;
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 300px;
+      margin-bottom: 20px;
+    }
+
+    #photo {
+      display: none;
+      width: 100%;
+      height: auto;
+      max-height: 75vh;
+      object-fit: contain;
+    }
+
+    .loading {
+      padding: 50px 20px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .error {
+      display: none;
+      padding: 35px 20px;
+    }
+
+    .error-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .error-message {
+      color: #6b7280;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .buttons {
+      display: none;
+      gap: 10px;
+      flex-direction: column;
+    }
+
+    button,
+    .download-button {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      transition: transform 0.15s ease;
+    }
+
+    button:active,
+    .download-button:active {
+      transform: scale(0.98);
+    }
+
+    .download-button {
+      background: #111827;
+      color: #ffffff;
+    }
+
+    .save-button {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .info {
+      display: none;
+      margin-top: 18px;
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 10px;
+      color: #6b7280;
+      font-size: 11px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .footer {
+      margin-top: 18px;
+      color: #9ca3af;
+      font-size: 11px;
+    }
+  </style>
 </head>
-
 
 <body>
 
-    <!-- =========================================================
-         HEADER
-         ========================================================= -->
+  <main class="page">
 
-    <header class="header">
+    <section class="card">
 
-        <div class="title">
-            RESIBOOTH
+      <div class="brand">
+        RESIBOOTH
+      </div>
+
+      <h1>Your Photo</h1>
+
+      <p class="subtitle" id="subtitle">
+        Loading your photo...
+      </p>
+
+      <div class="photo-wrapper">
+
+        <div class="loading" id="loading">
+          Loading photo...
         </div>
 
-        <div class="subtitle">
-            BY SNAPS STUDIO
+        <img
+          id="photo"
+          alt="Your RESIBOOTH photo"
+        >
+
+        <div class="error" id="error">
+          <div class="error-title">
+            We couldn't load your photo
+          </div>
+
+          <div class="error-message" id="error-message">
+            Please try scanning the QR code again.
+          </div>
         </div>
 
-    </header>
+      </div>
 
-
-    <!-- =========================================================
-         PHOTO CARD
-         ========================================================= -->
-
-    <div
-        class="card"
-        id="content"
-    >
-
-        <div class="loading">
-            Loading your photo...
-        </div>
-
-    </div>
-
-
-    <!-- =========================================================
-         DOWNLOAD BUTTON
-         ========================================================= -->
-
-    <div
-        class="actions"
-        id="actions"
-        style="display: none;"
-    >
+      <div class="buttons" id="buttons">
 
         <a
-            id="downloadButton"
-            class="button download"
-            href="#"
-            target="_blank"
-            rel="noopener"
+          id="download-button"
+          class="download-button"
+          href="#"
+          download
         >
-            Download Photo
+          DOWNLOAD PHOTO
         </a>
 
-    </div>
+        <button
+          type="button"
+          class="save-button"
+          id="save-button"
+        >
+          SAVE PHOTO
+        </button>
+
+      </div>
+
+      <div class="info" id="info"></div>
+
+      <div class="footer">
+        RESIBOOTH PHOTO DELIVERY
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+    /* ============================================================
+       RESIBOOTH PHOTO VIEWER
+       ============================================================ */
+
+    const SUPABASE_URL =
+      'https://kjfghpchexnzxeruqssp.supabase.co';
+
+    const BUCKET_NAME = 'photos';
+
+    const EXPECTED_PROJECT =
+      'kjfghpchexnzxeruqssp';
 
 
-    <!-- =========================================================
-         MESSAGE
-         ========================================================= -->
+    /* ============================================================
+       ELEMENTS
+       ============================================================ */
 
-    <p
-        class="note"
-        id="note"
-    >
-        Your photo is being loaded.
-    </p>
-
-
-    <div class="thanks">
-        *** THANK YOU FOR SNAPPING ***
-    </div>
-
-
-    <!-- =========================================================
-         SUPABASE JAVASCRIPT LIBRARY
-
-         IMPORTANT:
-         This must load BEFORE createClient().
-         ========================================================= -->
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    const photo = document.getElementById('photo');
+    const loading = document.getElementById('loading');
+    const errorBox = document.getElementById('error');
+    const errorMessage = document.getElementById('error-message');
+    const buttons = document.getElementById('buttons');
+    const downloadButton =
+      document.getElementById('download-button');
+    const saveButton =
+      document.getElementById('save-button');
+    const subtitle =
+      document.getElementById('subtitle');
+    const info =
+      document.getElementById('info');
 
 
-    <script>
+    /* ============================================================
+       GET QR PARAMETERS
+       ============================================================ */
 
-        /* =========================================================
-           SUPABASE CONFIGURATION
-           ========================================================= */
+    const params = new URLSearchParams(
+      window.location.search
+    );
 
-        const SUPABASE_URL =
-            'https://kjfghpchexnzxeruqssp.supabase.co';
+    const projectRef = params.get('r');
+    const bucket = params.get('b');
+    const photoId = params.get('id');
+    const variant = params.get('v');
 
-        const SUPABASE_KEY =
-            'sb_publishable_owdTu7EOouBkNZSkvvM8QQ_1vqRAZCI';
+
+    /* ============================================================
+       VALIDATE QR DATA
+       ============================================================ */
+
+    function validateParameters() {
+
+      if (!projectRef) {
+        throw new Error(
+          'The QR code does not contain a project reference.'
+        );
+      }
+
+      if (!photoId) {
+        throw new Error(
+          'The QR code does not contain a photo ID.'
+        );
+      }
+
+      if (!variant) {
+        throw new Error(
+          'The QR code does not contain a photo version.'
+        );
+      }
+
+      if (projectRef !== EXPECTED_PROJECT) {
+        throw new Error(
+          'This QR code belongs to a different project.'
+        );
+      }
+
+      if (bucket && bucket !== BUCKET_NAME) {
+        throw new Error(
+          'The photo bucket is invalid.'
+        );
+      }
+
+      if (
+        variant !== 'color' &&
+        variant !== 'bw'
+      ) {
+        throw new Error(
+          'The photo version is invalid.'
+        );
+      }
+
+      if (!/^[a-zA-Z0-9_-]+$/.test(photoId)) {
+        throw new Error(
+          'The photo ID is invalid.'
+        );
+      }
+    }
 
 
-        /* =========================================================
-           CHECK SUPABASE LIBRARY
-           ========================================================= */
+    /* ============================================================
+       BUILD SUPABASE PHOTO PATH
+       ============================================================ */
 
-        if (!window.supabase) {
+    function getFilePath() {
 
-            document.getElementById('content').innerHTML = `
-                <div class="error">
+      return (
+        'p/' +
+        photoId +
+        '-' +
+        variant +
+        '.jpg'
+      );
 
-                    <h2>
-                        Viewer Error
-                    </h2>
+    }
 
-                    <p>
-                        Supabase could not be loaded.
-                        Please try scanning the QR code again.
-                    </p>
 
-                </div>
-            `;
+    /* ============================================================
+       BUILD PUBLIC SUPABASE URL
+       ============================================================ */
 
-            throw new Error(
-                'Supabase JavaScript library failed to load.'
-            );
+    function getPhotoUrl() {
+
+      const filePath = getFilePath();
+
+      return (
+        SUPABASE_URL +
+        '/storage/v1/object/public/' +
+        encodeURIComponent(BUCKET_NAME) +
+        '/' +
+        filePath
+          .split('/')
+          .map(part => encodeURIComponent(part))
+          .join('/')
+      );
+
+    }
+
+
+    /* ============================================================
+       SHOW ERROR
+       ============================================================ */
+
+    function showError(message) {
+
+      console.error(
+        'Photo viewer error:',
+        message
+      );
+
+      loading.style.display = 'none';
+
+      photo.style.display = 'none';
+
+      buttons.style.display = 'none';
+
+      errorBox.style.display = 'block';
+
+      errorMessage.textContent =
+        message ||
+        'Please try scanning the QR code again.';
+
+      subtitle.textContent =
+        'Unable to load your photo.';
+
+    }
+
+
+    /* ============================================================
+       LOAD PHOTO
+       ============================================================ */
+
+    function loadPhoto() {
+
+      try {
+
+        validateParameters();
+
+        const photoUrl = getPhotoUrl();
+
+        console.log(
+          'Photo ID:',
+          photoId
+        );
+
+        console.log(
+          'Variant:',
+          variant
+        );
+
+        console.log(
+          'Photo URL:',
+          photoUrl
+        );
+
+
+        /* --------------------------------------------------------
+           Update text
+           -------------------------------------------------------- */
+
+        if (variant === 'bw') {
+
+          subtitle.textContent =
+            'Your black & white photo';
+
+        } else {
+
+          subtitle.textContent =
+            'Your colour photo';
+
         }
 
 
-        /* =========================================================
-           CREATE SUPABASE CLIENT
-           ========================================================= */
+        /* --------------------------------------------------------
+           Load image
+           -------------------------------------------------------- */
 
-        const supabaseClient =
-            window.supabase.createClient(
-                SUPABASE_URL,
-                SUPABASE_KEY
-            );
+        photo.onload = function() {
 
+          loading.style.display = 'none';
 
-        /* =========================================================
-           READ QR CODE PARAMETERS
-           
-           QR CODE EXAMPLES:
+          errorBox.style.display = 'none';
 
-           ?id=20260909-173500-a1b2c3d4&v=color
+          photo.style.display = 'block';
 
-           OR
+          buttons.style.display = 'flex';
 
-           ?id=20260909-173500-a1b2c3d4&v=bw
-           ========================================================= */
+          info.style.display = 'block';
 
-        const urlParams =
-            new URLSearchParams(
-                window.location.search
-            );
+          info.textContent =
+            'Photo ID: ' +
+            photoId;
 
+        };
 
-        const photoId =
-            urlParams.get('id');
 
+        photo.onerror = function() {
 
-        const variantParam =
-            urlParams.get('v');
+          showError(
+            'We could not load your photo. ' +
+            'Please make sure the Supabase photos bucket ' +
+            'is public and that the QR code is correct.'
+          );
 
+        };
 
-        /* =========================================================
-           DETERMINE PHOTO VARIANT
-           ========================================================= */
 
-        const variant =
-            variantParam === 'bw'
-                ? 'bw'
-                : 'color';
+        photo.src = photoUrl;
 
 
-        /* =========================================================
-           PAGE ELEMENTS
-           ========================================================= */
+        /* --------------------------------------------------------
+           Download button
+           -------------------------------------------------------- */
 
-        const content =
-            document.getElementById(
-                'content'
-            );
+        downloadButton.href = photoUrl;
 
+        downloadButton.download =
+          'resibooth-' +
+          photoId +
+          '-' +
+          variant +
+          '.jpg';
 
-        const actions =
-            document.getElementById(
-                'actions'
-            );
 
+        /* --------------------------------------------------------
+           Save button
+           -------------------------------------------------------- */
 
-        const downloadButton =
-            document.getElementById(
-                'downloadButton'
-            );
+        saveButton.onclick = function() {
 
+          const link =
+            document.createElement('a');
 
-        const note =
-            document.getElementById(
-                'note'
-            );
+          link.href = photoUrl;
 
+          link.download =
+            'resibooth-' +
+            photoId +
+            '-' +
+            variant +
+            '.jpg';
 
-        /* =========================================================
-           VALIDATE PHOTO ID
-           
-           Expected format:
+          document.body.appendChild(link);
 
-           YYYYMMDD-HHMMSS-8HEX
+          link.click();
 
-           Example:
+          document.body.removeChild(link);
 
-           20260909-173500-a1b2c3d4
-           ========================================================= */
+        };
 
-        function isValidPhotoId(id) {
+      } catch (error) {
 
-            if (!id) {
-                return false;
-            }
+        showError(
+          error.message ||
+          'We could not load your photo.'
+        );
 
-            return /^\d{8}-\d{6}-[0-9a-f]{8}$/i.test(id);
-        }
+      }
 
+    }
 
-        /* =========================================================
-           CREATE SUPABASE FILE PATH
-           
-           THIS MUST MATCH script.js.
 
-           COLOUR:
+    /* ============================================================
+       START
+       ============================================================ */
 
-           p/{id}-color.jpg
+    loadPhoto();
 
-           BLACK & WHITE:
-
-           p/{id}-bw.jpg
-           ========================================================= */
-
-        function getFilePath(
-            id,
-            selectedVariant
-        ) {
-
-            return `p/${id}-${selectedVariant}.jpg`;
-        }
-
-
-        /* =========================================================
-           GET PUBLIC SUPABASE URL
-           ========================================================= */
-
-        function getPublicPhotoUrl(
-            filePath
-        ) {
-
-            const result =
-                supabaseClient.storage
-                    .from('photos')
-                    .getPublicUrl(
-                        filePath
-                    );
-
-
-            if (
-                !result ||
-                !result.data ||
-                !result.data.publicUrl
-            ) {
-
-                throw new Error(
-                    'Could not create the Supabase photo URL.'
-                );
-            }
-
-
-            return result.data.publicUrl;
-        }
-
-
-        /* =========================================================
-           SHOW ERROR
-           ========================================================= */
-
-        function showError(message) {
-
-            content.innerHTML = `
-
-                <div class="error">
-
-                    <h2>
-                        Photo unavailable
-                    </h2>
-
-                    <p>
-                        ${message}
-                    </p>
-
-                </div>
-
-            `;
-
-
-            actions.style.display =
-                'none';
-
-
-            note.textContent =
-                'Please scan the QR code again from the photobooth.';
-        }
-
-
-        /* =========================================================
-           SHOW PHOTO
-           ========================================================= */
-
-        function showPhoto(photoUrl) {
-
-            const label =
-                variant === 'bw'
-                    ? 'Black & White Version'
-                    : 'Colour Version';
-
-
-            content.innerHTML = `
-
-                <div class="label">
-                    ${label}
-                </div>
-
-                <img
-                    id="photo"
-                    src="${photoUrl}"
-                    alt="Your RESIBOOTH photo"
-                >
-
-            `;
-
-
-            /* -----------------------------------------------------
-               SHOW DOWNLOAD BUTTON
-               ----------------------------------------------------- */
-
-            actions.style.display =
-                'flex';
-
-
-            downloadButton.href =
-                photoUrl;
-
-
-            downloadButton.download =
-                `RESIBOOTH-${photoId}-${variant}.jpg`;
-
-
-            note.textContent =
-                'Tap Download Photo to save your photo to your device.';
-        }
-
-
-        /* =========================================================
-           LOAD PHOTO
-           ========================================================= */
-
-        async function loadPhoto() {
-
-            try {
-
-                /* -------------------------------------------------
-                   CHECK PHOTO ID
-                   ------------------------------------------------- */
-
-                if (!isValidPhotoId(photoId)) {
-
-                    showError(
-                        'The QR code does not contain a valid photo ID.'
-                    );
-
-                    return;
-                }
-
-
-                console.log(
-                    'Photo ID:',
-                    photoId
-                );
-
-
-                console.log(
-                    'Photo variant:',
-                    variant
-                );
-
-
-                /* -------------------------------------------------
-                   BUILD SUPABASE FILE PATH
-                   ------------------------------------------------- */
-
-                const filePath =
-                    getFilePath(
-                        photoId,
-                        variant
-                    );
-
-
-                console.log(
-                    'Supabase file path:',
-                    filePath
-                );
-
-
-                /* -------------------------------------------------
-                   GET PUBLIC PHOTO URL
-                   ------------------------------------------------- */
-
-                const photoUrl =
-                    getPublicPhotoUrl(
-                        filePath
-                    );
-
-
-                console.log(
-                    'Supabase public URL:',
-                    photoUrl
-                );
-
-
-                /* -------------------------------------------------
-                   CHECK THAT IMAGE ACTUALLY EXISTS
-                   ------------------------------------------------- */
-
-                const image =
-                    new Image();
-
-
-                image.onload =
-                    function() {
-
-                        console.log(
-                            'Photo loaded successfully.'
-                        );
-
-
-                        showPhoto(
-                            photoUrl
-                        );
-                    };
-
-
-                image.onerror =
-                    function() {
-
-                        console.error(
-                            'Photo could not be loaded:',
-                            photoUrl
-                        );
-
-
-                        showError(
-                            'The photo could not be found. Please check that the Supabase "photos" bucket is public and that the photo was uploaded successfully.'
-                        );
-                    };
-
-
-                image.src =
-                    photoUrl;
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    'Photo viewer error:',
-                    error
-                );
-
-
-                showError(
-                    'We could not load your photo. Please try scanning the QR code again.'
-                );
-            }
-        }
-
-
-        /* =========================================================
-           START PHOTO VIEWER
-           ========================================================= */
-
-        loadPhoto();
-
-    </script>
+  </script>
 
 </body>
-
 </html>
