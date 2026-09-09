@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
@@ -21,9 +22,11 @@
       background: #f4f4f6;
       color: #111827;
       font-family: Arial, Helvetica, sans-serif;
+
       display: flex;
       justify-content: center;
       align-items: center;
+
       padding: 24px;
     }
 
@@ -36,7 +39,10 @@
       background: #ffffff;
       border-radius: 20px;
       padding: 24px;
-      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.10);
+
+      box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.10);
+
       text-align: center;
     }
 
@@ -61,70 +67,97 @@
 
     .photo-wrapper {
       width: 100%;
+
       background: #f3f4f6;
       border-radius: 14px;
+
       overflow: hidden;
+
       display: flex;
       justify-content: center;
       align-items: center;
+
       min-height: 300px;
       margin-bottom: 20px;
     }
 
     #photo {
       display: none;
+
       width: 100%;
       height: auto;
+
       max-height: 75vh;
+
       object-fit: contain;
     }
 
     .loading {
       padding: 50px 20px;
+
       color: #6b7280;
       font-size: 14px;
     }
 
     .error {
       display: none;
+
       padding: 35px 20px;
     }
 
     .error-title {
       font-size: 20px;
       font-weight: 700;
-      margin-bottom: 8px;
+
+      margin-bottom: 10px;
     }
 
     .error-message {
       color: #6b7280;
+
       font-size: 14px;
       line-height: 1.5;
     }
 
     .buttons {
       display: none;
+
       gap: 10px;
+
       flex-direction: column;
     }
 
     button,
     .download-button {
       width: 100%;
+
       border: none;
       border-radius: 12px;
+
       padding: 14px 18px;
+
       font-size: 15px;
       font-weight: 700;
+
       cursor: pointer;
+
       text-decoration: none;
+
       display: block;
-      transition: transform 0.15s ease;
+
+      transition:
+        transform 0.15s ease,
+        opacity 0.15s ease;
     }
 
     button:active,
     .download-button:active {
       transform: scale(0.98);
+    }
+
+    button:hover,
+    .download-button:hover {
+      opacity: 0.9;
     }
 
     .download-button {
@@ -139,20 +172,37 @@
 
     .info {
       display: none;
+
       margin-top: 18px;
       padding: 12px;
+
       background: #f9fafb;
       border-radius: 10px;
+
       color: #6b7280;
+
       font-size: 11px;
       line-height: 1.5;
+
       word-break: break-word;
     }
 
     .footer {
       margin-top: 18px;
+
       color: #9ca3af;
+
       font-size: 11px;
+    }
+
+    .retry-button {
+      margin-top: 15px;
+
+      background: #111827;
+      color: #ffffff;
+
+      width: auto;
+      display: inline-block;
     }
   </style>
 </head>
@@ -167,15 +217,23 @@
         RESIBOOTH
       </div>
 
-      <h1>Your Photo</h1>
+      <h1>
+        Your Photo
+      </h1>
 
-      <p class="subtitle" id="subtitle">
+      <p
+        class="subtitle"
+        id="subtitle"
+      >
         Loading your photo...
       </p>
 
       <div class="photo-wrapper">
 
-        <div class="loading" id="loading">
+        <div
+          class="loading"
+          id="loading"
+        >
           Loading photo...
         </div>
 
@@ -184,25 +242,45 @@
           alt="Your RESIBOOTH photo"
         >
 
-        <div class="error" id="error">
+        <div
+          class="error"
+          id="error"
+        >
+
           <div class="error-title">
             We couldn't load your photo
           </div>
 
-          <div class="error-message" id="error-message">
+          <div
+            class="error-message"
+            id="error-message"
+          >
             Please try scanning the QR code again.
           </div>
+
+          <button
+            type="button"
+            class="retry-button"
+            id="retry-button"
+          >
+            TRY AGAIN
+          </button>
+
         </div>
 
       </div>
 
-      <div class="buttons" id="buttons">
+      <div
+        class="buttons"
+        id="buttons"
+      >
 
         <a
           id="download-button"
           class="download-button"
           href="#"
-          download
+          target="_blank"
+          rel="noopener"
         >
           DOWNLOAD PHOTO
         </a>
@@ -217,7 +295,10 @@
 
       </div>
 
-      <div class="info" id="info"></div>
+      <div
+        class="info"
+        id="info"
+      ></div>
 
       <div class="footer">
         RESIBOOTH PHOTO DELIVERY
@@ -227,7 +308,9 @@
 
   </main>
 
+
   <script>
+
     /* ============================================================
        RESIBOOTH PHOTO VIEWER
        ============================================================ */
@@ -235,100 +318,186 @@
     const SUPABASE_URL =
       'https://kjfghpchexnzxeruqssp.supabase.co';
 
-    const BUCKET_NAME = 'photos';
+    const BUCKET_NAME =
+      'photos';
 
     const EXPECTED_PROJECT =
       'kjfghpchexnzxeruqssp';
 
 
     /* ============================================================
-       ELEMENTS
+       PAGE ELEMENTS
        ============================================================ */
 
-    const photo = document.getElementById('photo');
-    const loading = document.getElementById('loading');
-    const errorBox = document.getElementById('error');
-    const errorMessage = document.getElementById('error-message');
-    const buttons = document.getElementById('buttons');
+    const photo =
+      document.getElementById('photo');
+
+    const loading =
+      document.getElementById('loading');
+
+    const errorBox =
+      document.getElementById('error');
+
+    const errorMessage =
+      document.getElementById('error-message');
+
+    const buttons =
+      document.getElementById('buttons');
+
     const downloadButton =
       document.getElementById('download-button');
+
     const saveButton =
       document.getElementById('save-button');
+
     const subtitle =
       document.getElementById('subtitle');
+
     const info =
       document.getElementById('info');
 
+    const retryButton =
+      document.getElementById('retry-button');
+
 
     /* ============================================================
-       GET QR PARAMETERS
+       READ QR PARAMETERS
        ============================================================ */
 
-    const params = new URLSearchParams(
-      window.location.search
-    );
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
 
-    const projectRef = params.get('r');
-    const bucket = params.get('b');
-    const photoId = params.get('id');
-    const variant = params.get('v');
+    /*
+     * The QR code can contain:
+     *
+     * ?r=PROJECT&b=photos&id=PHOTO-ID&v=color
+     *
+     * or:
+     *
+     * ?id=PHOTO-ID&v=color
+     *
+     * The project reference is OPTIONAL.
+     */
+
+    const projectRef =
+      params.get('r');
+
+    const bucketParam =
+      params.get('b');
+
+    const photoId =
+      params.get('id');
+
+    const variant =
+      params.get('v');
 
 
     /* ============================================================
-       VALIDATE QR DATA
+       VALIDATE PARAMETERS
        ============================================================ */
 
     function validateParameters() {
 
-      if (!projectRef) {
-        throw new Error(
-          'The QR code does not contain a project reference.'
-        );
-      }
+      /*
+       * Project reference is optional.
+       *
+       * This fixes the problem where the QR code does not
+       * contain "r".
+       */
 
-      if (!photoId) {
-        throw new Error(
-          'The QR code does not contain a photo ID.'
-        );
-      }
+      if (
+        projectRef &&
+        projectRef !== EXPECTED_PROJECT
+      ) {
 
-      if (!variant) {
-        throw new Error(
-          'The QR code does not contain a photo version.'
-        );
-      }
-
-      if (projectRef !== EXPECTED_PROJECT) {
         throw new Error(
           'This QR code belongs to a different project.'
         );
+
       }
 
-      if (bucket && bucket !== BUCKET_NAME) {
+
+      /*
+       * Bucket is optional.
+       */
+
+      if (
+        bucketParam &&
+        bucketParam !== BUCKET_NAME
+      ) {
+
         throw new Error(
           'The photo bucket is invalid.'
         );
+
       }
+
+
+      /*
+       * Photo ID is required.
+       */
+
+      if (!photoId) {
+
+        throw new Error(
+          'The QR code does not contain a photo ID.'
+        );
+
+      }
+
+
+      /*
+       * Variant is required.
+       */
+
+      if (!variant) {
+
+        throw new Error(
+          'The QR code does not contain a photo version.'
+        );
+
+      }
+
+
+      /*
+       * Only these two versions are allowed.
+       */
 
       if (
         variant !== 'color' &&
         variant !== 'bw'
       ) {
+
         throw new Error(
           'The photo version is invalid.'
         );
+
       }
 
-      if (!/^[a-zA-Z0-9_-]+$/.test(photoId)) {
+
+      /*
+       * Your script.js creates IDs like:
+       *
+       * 20260910-012345-a1b2c3d4
+       */
+
+      if (
+        !/^[a-zA-Z0-9_-]+$/.test(photoId)
+      ) {
+
         throw new Error(
           'The photo ID is invalid.'
         );
+
       }
+
     }
 
 
     /* ============================================================
-       BUILD SUPABASE PHOTO PATH
+       BUILD SUPABASE FILE PATH
        ============================================================ */
 
     function getFilePath() {
@@ -345,22 +514,34 @@
 
 
     /* ============================================================
-       BUILD PUBLIC SUPABASE URL
+       BUILD SUPABASE PUBLIC URL
        ============================================================ */
 
     function getPhotoUrl() {
 
-      const filePath = getFilePath();
+      const filePath =
+        getFilePath();
+
+      const encodedBucket =
+        encodeURIComponent(
+          BUCKET_NAME
+        );
+
+      const encodedPath =
+        filePath
+          .split('/')
+          .map(
+            part =>
+              encodeURIComponent(part)
+          )
+          .join('/');
 
       return (
         SUPABASE_URL +
         '/storage/v1/object/public/' +
-        encodeURIComponent(BUCKET_NAME) +
+        encodedBucket +
         '/' +
-        filePath
-          .split('/')
-          .map(part => encodeURIComponent(part))
-          .join('/')
+        encodedPath
       );
 
     }
@@ -373,24 +554,151 @@
     function showError(message) {
 
       console.error(
-        'Photo viewer error:',
+        'RESIBOOTH viewer error:',
         message
       );
 
-      loading.style.display = 'none';
 
-      photo.style.display = 'none';
+      loading.style.display =
+        'none';
 
-      buttons.style.display = 'none';
 
-      errorBox.style.display = 'block';
+      photo.style.display =
+        'none';
+
+
+      buttons.style.display =
+        'none';
+
+
+      info.style.display =
+        'none';
+
+
+      errorBox.style.display =
+        'block';
+
 
       errorMessage.textContent =
         message ||
         'Please try scanning the QR code again.';
 
+
       subtitle.textContent =
         'Unable to load your photo.';
+
+    }
+
+
+    /* ============================================================
+       SHOW PHOTO
+       ============================================================ */
+
+    function showPhoto(photoUrl) {
+
+      loading.style.display =
+        'none';
+
+
+      errorBox.style.display =
+        'none';
+
+
+      photo.style.display =
+        'block';
+
+
+      buttons.style.display =
+        'flex';
+
+
+      info.style.display =
+        'block';
+
+
+      /*
+       * Update subtitle.
+       */
+
+      if (variant === 'bw') {
+
+        subtitle.textContent =
+          'Your black & white photo';
+
+      } else {
+
+        subtitle.textContent =
+          'Your colour photo';
+
+      }
+
+
+      /*
+       * Show photo information.
+       */
+
+      info.textContent =
+        'Photo ID: ' +
+        photoId;
+
+
+      /*
+       * Download button.
+       */
+
+      downloadButton.href =
+        photoUrl;
+
+      downloadButton.download =
+        'resibooth-' +
+        photoId +
+        '-' +
+        variant +
+        '.jpg';
+
+
+      /*
+       * Save button.
+       */
+
+      saveButton.onclick =
+        function () {
+
+          const link =
+            document.createElement('a');
+
+          link.href =
+            photoUrl;
+
+          link.download =
+            'resibooth-' +
+            photoId +
+            '-' +
+            variant +
+            '.jpg';
+
+          link.target =
+            '_blank';
+
+          link.rel =
+            'noopener';
+
+          document.body.appendChild(
+            link
+          );
+
+          link.click();
+
+          document.body.removeChild(
+            link
+          );
+
+        };
+
+
+      console.log(
+        'Photo successfully displayed.'
+      );
 
     }
 
@@ -401,11 +709,61 @@
 
     function loadPhoto() {
 
+      /*
+       * Reset the page.
+       */
+
+      loading.style.display =
+        'block';
+
+      photo.style.display =
+        'none';
+
+      errorBox.style.display =
+        'none';
+
+      buttons.style.display =
+        'none';
+
+      info.style.display =
+        'none';
+
+
       try {
+
+        /*
+         * Validate QR information.
+         */
 
         validateParameters();
 
-        const photoUrl = getPhotoUrl();
+
+        /*
+         * Build Supabase URL.
+         */
+
+        const photoUrl =
+          getPhotoUrl();
+
+
+        console.log(
+          '================================='
+        );
+
+        console.log(
+          'RESIBOOTH PHOTO VIEWER'
+        );
+
+        console.log(
+          'Project:',
+          projectRef ||
+          '(not provided - using configured project)'
+        );
+
+        console.log(
+          'Bucket:',
+          BUCKET_NAME
+        );
 
         console.log(
           'Photo ID:',
@@ -418,70 +776,82 @@
         );
 
         console.log(
+          'Supabase file:',
+          getFilePath()
+        );
+
+        console.log(
           'Photo URL:',
           photoUrl
         );
 
+        console.log(
+          '================================='
+        );
 
-        /* --------------------------------------------------------
-           Update text
-           -------------------------------------------------------- */
+
+        /*
+         * Update subtitle while loading.
+         */
 
         if (variant === 'bw') {
 
           subtitle.textContent =
-            'Your black & white photo';
+            'Loading your black & white photo...';
 
         } else {
 
           subtitle.textContent =
-            'Your colour photo';
+            'Loading your colour photo...';
 
         }
 
 
-        /* --------------------------------------------------------
-           Load image
-           -------------------------------------------------------- */
+        /*
+         * Set image handlers BEFORE assigning src.
+         */
 
-        photo.onload = function() {
+        photo.onload =
+          function () {
 
-          loading.style.display = 'none';
+            showPhoto(
+              photoUrl
+            );
 
-          errorBox.style.display = 'none';
-
-          photo.style.display = 'block';
-
-          buttons.style.display = 'flex';
-
-          info.style.display = 'block';
-
-          info.textContent =
-            'Photo ID: ' +
-            photoId;
-
-        };
+          };
 
 
-        photo.onerror = function() {
+        photo.onerror =
+          function () {
 
-          showError(
-            'We could not load your photo. ' +
-            'Please make sure the Supabase photos bucket ' +
-            'is public and that the QR code is correct.'
-          );
+            console.error(
+              'Supabase image failed:',
+              photoUrl
+            );
 
-        };
+            showError(
+              'The photo could not be found. ' +
+              'Please make sure the photo was uploaded successfully ' +
+              'and that the "photos" bucket is public.'
+            );
+
+          };
 
 
-        photo.src = photoUrl;
+        /*
+         * Set photo URL.
+         */
+
+        photo.src =
+          photoUrl;
 
 
-        /* --------------------------------------------------------
-           Download button
-           -------------------------------------------------------- */
+        /*
+         * Prepare download button.
+         */
 
-        downloadButton.href = photoUrl;
+        downloadButton.href =
+          photoUrl;
 
         downloadButton.download =
           'resibooth-' +
@@ -491,33 +861,12 @@
           '.jpg';
 
 
-        /* --------------------------------------------------------
-           Save button
-           -------------------------------------------------------- */
-
-        saveButton.onclick = function() {
-
-          const link =
-            document.createElement('a');
-
-          link.href = photoUrl;
-
-          link.download =
-            'resibooth-' +
-            photoId +
-            '-' +
-            variant +
-            '.jpg';
-
-          document.body.appendChild(link);
-
-          link.click();
-
-          document.body.removeChild(link);
-
-        };
-
       } catch (error) {
+
+        console.error(
+          'RESIBOOTH viewer error:',
+          error
+        );
 
         showError(
           error.message ||
@@ -527,6 +876,18 @@
       }
 
     }
+
+
+    /* ============================================================
+       RETRY BUTTON
+       ============================================================ */
+
+    retryButton.onclick =
+      function () {
+
+        loadPhoto();
+
+      };
 
 
     /* ============================================================
