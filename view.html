@@ -2,207 +2,187 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RESIBOOTH — Your Photo</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>RESIBOOTH – Your Photo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --accent-red: #8B0000;
+      --accent-red-hover: #660000;
+      --card-bg: #ffffff;
+      --card-border: rgba(0, 0, 0, 0.08);
+      --glass-bg: #f9f7f7;
+      --text-main: #111827;
+      --text-sub: #6b7280;
+      --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.09);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
       min-height: 100vh;
-      background: #f4f4f6;
-      color: #111827;
-      font-family: Arial, Helvetica, sans-serif;
-
+      min-height: 100dvh;
+      background: radial-gradient(circle at top, #ede0e0 0%, #f4f4f6 100%);
+      color: var(--text-main);
       display: flex;
       justify-content: center;
-      align-items: center;
-
-      padding: 24px;
+      align-items: flex-start;
+      padding: 32px 18px 48px;
     }
 
-    .page {
-      width: 100%;
-      max-width: 600px;
+    .mono-font { font-family: 'Space Mono', ui-monospace, monospace; }
+
+    .page { width: 100%; max-width: 420px; }
+
+    .brand-header {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      margin-bottom: 22px; width: 100%;
+    }
+    .brand-title {
+      font-family: 'Cinzel', serif; font-size: 30px; font-weight: 700;
+      color: var(--accent-red); letter-spacing: 4px; line-height: 1; text-transform: uppercase;
+    }
+    .brand-sub {
+      font-size: 11px; font-weight: 800; color: var(--accent-red);
+      letter-spacing: 2.5px; line-height: 1.1; margin-top: 6px; text-transform: uppercase;
     }
 
     .card {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 24px;
-
-      box-shadow:
-        0 10px 35px rgba(0, 0, 0, 0.10);
-
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 26px;
+      padding: 26px 22px;
+      box-shadow: var(--shadow-card);
       text-align: center;
     }
 
-    .brand {
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      color: #6b7280;
-      margin-bottom: 8px;
-    }
-
     h1 {
-      font-size: 28px;
-      margin-bottom: 8px;
+      font-size: 21px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 4px;
     }
 
     .subtitle {
-      color: #6b7280;
-      font-size: 14px;
+      color: var(--text-sub);
+      font-size: 13px;
+      font-weight: 600;
       margin-bottom: 22px;
     }
 
     .photo-wrapper {
       width: 100%;
-
-      background: #f3f4f6;
-      border-radius: 14px;
-
+      background: var(--glass-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
       overflow: hidden;
-
       display: flex;
       justify-content: center;
       align-items: center;
-
-      min-height: 300px;
+      min-height: 280px;
       margin-bottom: 20px;
     }
 
     #photo {
       display: none;
-
       width: 100%;
       height: auto;
-
-      max-height: 75vh;
-
+      max-height: 72vh;
       object-fit: contain;
     }
 
     .loading {
-      padding: 50px 20px;
-
-      color: #6b7280;
-      font-size: 14px;
+      padding: 60px 20px;
+      color: var(--text-sub);
+      font-size: 13px;
+      font-weight: 600;
     }
 
-    .error {
-      display: none;
-
-      padding: 35px 20px;
-    }
+    .error { display: none; padding: 40px 20px; }
 
     .error-title {
-      font-size: 20px;
-      font-weight: 700;
-
-      margin-bottom: 10px;
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 8px;
     }
 
     .error-message {
-      color: #6b7280;
-
-      font-size: 14px;
-      line-height: 1.5;
+      color: var(--text-sub);
+      font-size: 13px;
+      line-height: 1.55;
     }
 
     .buttons {
       display: none;
-
       gap: 10px;
-
       flex-direction: column;
     }
 
-    button,
-    .download-button {
+    button, .download-button {
       width: 100%;
-
       border: none;
-      border-radius: 12px;
-
-      padding: 14px 18px;
-
-      font-size: 15px;
+      border-radius: 100px;
+      padding: 15px 18px;
+      font-size: 14.5px;
       font-weight: 700;
-
+      letter-spacing: 0.3px;
       cursor: pointer;
-
       text-decoration: none;
-
       display: block;
-
-      transition:
-        transform 0.15s ease,
-        opacity 0.15s ease;
+      transition: background 0.15s ease, transform 0.1s ease;
     }
 
-    button:active,
-    .download-button:active {
-      transform: scale(0.98);
-    }
-
-    button:hover,
-    .download-button:hover {
-      opacity: 0.9;
-    }
+    button:active, .download-button:active { transform: scale(0.98); }
 
     .download-button {
-      background: #111827;
-      color: #ffffff;
+      background: var(--accent-red);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(139, 0, 0, 0.25);
     }
+    .download-button:active { background: var(--accent-red-hover); }
 
     .save-button {
-      background: #e5e7eb;
-      color: #111827;
+      background: var(--glass-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
     }
 
     .info {
       display: none;
-
       margin-top: 18px;
-      padding: 12px;
-
-      background: #f9fafb;
-      border-radius: 10px;
-
-      color: #6b7280;
-
-      font-size: 11px;
+      padding: 11px 14px;
+      background: var(--glass-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      color: var(--text-sub);
+      font-size: 10.5px;
+      letter-spacing: 0.3px;
       line-height: 1.5;
-
       word-break: break-word;
     }
 
     .footer {
-      margin-top: 18px;
-
-      color: #9ca3af;
-
-      font-size: 11px;
+      margin-top: 22px;
+      color: var(--text-sub);
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      line-height: 1.6;
     }
 
     .retry-button {
-      margin-top: 15px;
-
-      background: #111827;
-      color: #ffffff;
-
+      margin-top: 18px;
+      background: var(--accent-red);
+      color: #fff;
       width: auto;
       display: inline-block;
+      padding: 12px 26px;
     }
   </style>
 </head>
@@ -211,98 +191,36 @@
 
   <main class="page">
 
+    <div class="brand-header">
+      <div class="brand-title">Resibooth</div>
+      <div class="brand-sub">By Snaps Studio</div>
+    </div>
+
     <section class="card">
 
-      <div class="brand">
-        RESIBOOTH
-      </div>
-
-      <h1>
-        Your Photo
-      </h1>
-
-      <p
-        class="subtitle"
-        id="subtitle"
-      >
-        Loading your photo...
-      </p>
+      <h1>Your Photo</h1>
+      <p class="subtitle" id="subtitle">Loading your photo…</p>
 
       <div class="photo-wrapper">
+        <div class="loading" id="loading">Loading photo…</div>
 
-        <div
-          class="loading"
-          id="loading"
-        >
-          Loading photo...
+        <img id="photo" alt="Your RESIBOOTH photo">
+
+        <div class="error" id="error">
+          <div class="error-title">We couldn't load your photo</div>
+          <div class="error-message" id="error-message">Please try scanning the QR code again.</div>
+          <button type="button" class="retry-button" id="retry-button">TRY AGAIN</button>
         </div>
-
-        <img
-          id="photo"
-          alt="Your RESIBOOTH photo"
-        >
-
-        <div
-          class="error"
-          id="error"
-        >
-
-          <div class="error-title">
-            We couldn't load your photo
-          </div>
-
-          <div
-            class="error-message"
-            id="error-message"
-          >
-            Please try scanning the QR code again.
-          </div>
-
-          <button
-            type="button"
-            class="retry-button"
-            id="retry-button"
-          >
-            TRY AGAIN
-          </button>
-
-        </div>
-
       </div>
 
-      <div
-        class="buttons"
-        id="buttons"
-      >
-
-        <a
-          id="download-button"
-          class="download-button"
-          href="#"
-          target="_blank"
-          rel="noopener"
-        >
-          DOWNLOAD PHOTO
-        </a>
-
-        <button
-          type="button"
-          class="save-button"
-          id="save-button"
-        >
-          SAVE PHOTO
-        </button>
-
+      <div class="buttons" id="buttons">
+        <a id="download-button" class="download-button" href="#" target="_blank" rel="noopener">DOWNLOAD PHOTO</a>
+        <button type="button" class="save-button" id="save-button">SAVE PHOTO</button>
       </div>
 
-      <div
-        class="info"
-        id="info"
-      ></div>
+      <div class="info mono-font" id="info"></div>
 
-      <div class="footer">
-        RESIBOOTH PHOTO DELIVERY
-      </div>
+      <p class="footer">*** Thank you for snapping ***<br>Follow us @SnapsStudio</p>
 
     </section>
 
@@ -313,6 +231,9 @@
 
     /* ============================================================
        RESIBOOTH PHOTO VIEWER
+       Same Supabase logic as before — only the look changed to match
+       the kiosk's own branding. Nothing about how the photo is fetched,
+       validated, or downloaded has been touched.
        ============================================================ */
 
     const SUPABASE_URL =
@@ -638,7 +559,7 @@
        */
 
       info.textContent =
-        'Photo ID: ' +
+        'PHOTO ID: ' +
         photoId;
 
 
@@ -797,12 +718,12 @@
         if (variant === 'bw') {
 
           subtitle.textContent =
-            'Loading your black & white photo...';
+            'Loading your black & white photo…';
 
         } else {
 
           subtitle.textContent =
-            'Loading your colour photo...';
+            'Loading your colour photo…';
 
         }
 
